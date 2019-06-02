@@ -21,7 +21,8 @@ val strokeFactor : Int = 90
 val sizeFactor : Float = 2.9f
 val foreColor : Int = Color.parseColor("#311B92")
 val backColor : Int = Color.parseColor("#BDBDBD")
-val rotDeg : Float = 180f
+val rotDeg : Float = 90f
+val delay : Long = 20
 
 fun Int.inverse() : Float = 1f / this
 fun Float.scaleFactor() : Float = Math.floor(this / scDiv).toFloat()
@@ -34,7 +35,7 @@ fun Float.mirrorValue(a : Int, b : Int) : Float {
 fun Float.updateValue(dir : Float, a : Int, b : Int) : Float = mirrorValue(a, b) * dir * scGap
 
 fun Canvas.drawTriangle(size : Float, sc : Float, paint : Paint) {
-    val x : Float = (size / 4) * sc
+    val x : Float = (size / 3) * sc
     val y : Float = -size * sc
     val path : Path = Path()
     path.moveTo(0f, 0f)
@@ -55,7 +56,7 @@ fun Canvas.drawBallTriangle(i : Int, size : Float, scale : Float, paint : Paint)
 fun Canvas.drawBBTNode(i : Int, scale : Float, paint : Paint) {
     val w : Float = width.toFloat()
     val h : Float = height.toFloat()
-    val gap : Float = w/ (nodes + 1)
+    val gap : Float = h / (nodes + 1)
     val size : Float = gap / sizeFactor
     val sc1 : Float = scale.divideScale(0, 2)
     val sc2 : Float = scale.divideScale(1, 2)
@@ -116,7 +117,7 @@ class BallBiTriangleView(ctx : Context) : View(ctx) {
             if (animated) {
                 cb()
                 try {
-                    Thread.sleep(50)
+                    Thread.sleep(delay)
                     view.invalidate()
                 } catch(ex : Exception) {
 
