@@ -11,6 +11,7 @@ import android.content.Context
 import android.graphics.Paint
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Path
 
 val nodes : Int = 5
 val triangles : Int = 2
@@ -20,6 +21,7 @@ val strokeFactor : Int = 90
 val sizeFactor : Float = 2.9f
 val foreColor : Int = Color.parseColor("#311B92")
 val backColor : Int = Color.parseColor("#BDBDBD")
+val rotDeg : Float = 90f
 
 fun Int.inverse() : Float = 1f / this
 fun Float.scaleFactor() : Float = Math.floor(this / scDiv).toFloat()
@@ -30,3 +32,42 @@ fun Float.mirrorValue(a : Int, b : Int) : Float {
     return (1 - k) * a.inverse() + k * b.inverse()
 }
 fun Float.updateValue(dir : Float, a : Int, b : Int) : Float = mirrorValue(a, b) * dir * scGap
+
+fun Canvas.drawTriangle(size : Float, sc : Float, paint : Paint) {
+    val x : Float = (size / 4) * sc
+    val y : Float = -size * sc
+    val path : Path = Path()
+    path.moveTo(0f, 0f)
+    path.lineTo(x, y)
+    path.lineTo(-x, y)
+    path.lineTo(0f, 0f)
+    drawPath(path, paint)
+}
+
+fun Canvas.drawBallTriangle(i : Int, size : Float, scale : Float, paint : Paint) {
+    save()
+    rotate(180f * i)
+    translate(0f, -size / 2)
+    drawTriangle(size, scale.divideScale(i, triangles), paint)
+    restore()
+}
+
+fun Canvas.drawBBTNode(i : Int, scale : Float, paint : Paint) {
+    val w : Float = width.toFloat()
+    val h : Float = height.toFloat()
+    val gap : Float = w/ (nodes + 1)
+    val size : Float = gap / sizeFactor
+    val sc1 : Float = scale.divideScale(0, 2)
+    val sc2 : Float = scale.divideScale(1, 2)
+    paint.color = foreColor
+    paint.strokeWidth = Math.min(w, h) / strokeFactor
+    paint.strokeCap = Paint.Cap.ROUND
+    save()
+    translate(w / 2, gap * (i + 1))
+    rotate(rotDeg * sc2)
+    drawCircle(0f, 0f, size / 2, paint)
+    for (j in 0..(triangles - 1)) {
+        drawBallTriangle(j, size, sc1, paint)
+    }
+    restore()
+}
