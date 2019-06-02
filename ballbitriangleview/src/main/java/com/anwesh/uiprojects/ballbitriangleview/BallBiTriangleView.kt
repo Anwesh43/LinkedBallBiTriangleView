@@ -226,4 +226,13 @@ class BallBiTriangleView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : BallBiTriangleView {
+            val view : BallBiTriangleView = BallBiTriangleView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
