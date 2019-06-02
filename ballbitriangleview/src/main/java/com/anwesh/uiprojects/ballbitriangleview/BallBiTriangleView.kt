@@ -203,5 +203,26 @@ class BallBiTriangleView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
-    
+
+    data class Renderer(var view : BallBiTriangleView) {
+
+        private val animator : Animator = Animator(view)
+        private val bbt : BallBiTriangle = BallBiTriangle(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            bbt.draw(canvas, paint)
+            animator.animate {
+                bbt.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            bbt.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
